@@ -6,7 +6,7 @@ __author__ = 'Brandon Wells'
 __email__ = 'b.w.prog@outlook.com'
 __license__ = 'GPLv3+'
 __update__ = '2024.02.04'
-__version__ = '0.3.0'
+__version__ = '0.3.1'
 
 
 import csv
@@ -94,12 +94,12 @@ def load_config(file: Path) -> dict[str, dict[str, str]]:
             config_text: Text = Text(text='', tab_size=4)
             for k, v in config.items():
                 if k == next(iter(config)):
-                    config_text.append(text=f'{k}:', style='medium_orchid')
+                    config_text.append(text=f'{k}:')
                 else:
-                    config_text.append(text=f'\n{k}:', style='medium_orchid')
+                    config_text.append(text=f'\n{k}:')
                 for k2, v2 in v.items():
-                    config_text.append(text=f'\n\t{k2}: ', style='green')
-                    config_text.append(text=v2)
+                    config_text.append(text=f'\n\t{k2}: ', style='medium_orchid')
+                    config_text.append(text=v2, style='green')
             con.print(Panel(
                 config_text,
                 title=f'Loaded Config from: {file}',
@@ -233,7 +233,6 @@ def compare_libs(
     dict[str, dict[str, Book]]
         a 'missing' and a 'both' dictionaries returned together in one dictionary
     """
-    # con.print(f'Entered compare_libs [grey50](first entry: {next(iter(lib_one))}[/])', style='green')
     both_books: dict[str, Book] = {}
     missing_books: dict[str, Book] = {}
 
@@ -243,8 +242,6 @@ def compare_libs(
         else:
             missing_books[ab_one] = lib_one[ab_one]
 
-    # con.print(f' - Missing ASIN count: {len(missing_books)} [grey50](in both: {len(both_books)})[/]',
-            #   style='orange_red1')
     return {'both': both_books, 'missing': missing_books}
 
 
@@ -298,7 +295,7 @@ def main(
         lib_num='Two',
     )
     lib_two_end_time: float = perf_counter() - lib_two_start_time
-    con.print(f'\t└─❯ ([green]{lib_two_end_time:.4f}[/]s)')
+    con.print(f'\t└─❯ ([blue]{lib_two_end_time:.4f}[/]s)')
 
     # create asin keyed libraries for easy comparison (this drops anything without an asin or duplicates with same asin)
     lib_one_asin: dict[str, Book] = {}
@@ -328,14 +325,14 @@ def main(
     len_both: int = len(first_compare['both'])
     con.print(Panel(
         ('Library One:'
-         f'\n\t[medium_orchid]- Unique Entries:[/]\t{len(lib_one)}'
-         f'\n\t[medium_orchid]- Unique ASINs:[/]\t\t{one_asin_len}'
-         f'\n\t[orange1]- Missing ASINs:[/]\t{one_missing_len} [grey50](ASINs in Lib Two not in Lib One)[/]\t\t'
+         f'\n\t[medium_orchid]- Unique Entries:[/]\t[blue]{len(lib_one)}[/]'
+         f'\n\t[medium_orchid]- Unique ASINs:[/]\t\t[blue]{one_asin_len}[/]'
+         f'\n\t[orange1]- Missing ASINs:[/]\t[blue]{one_missing_len}[/] [grey50](ASINs in Lib Two not in Lib One)[/]'
         '\nLibrary Two:'
-         f'\n\t[medium_orchid]- Unique Entries:[/]\t{len(lib_two)}'
-         f'\n\t[medium_orchid]- Unique ASINs:[/]\t\t{two_asin_len}'
-         f'\n\t[orange1]- Missing ASINs:[/]\t{two_missing_len} [grey50](ASINs in Lib One not in Lib Two)[/]\t\t'
-         f'\n\b[green]ASINs in Both Libraries:[/]\t{len_both}'),
+         f'\n\t[medium_orchid]- Unique Entries:[/]\t[blue]{len(lib_two)}[/]'
+         f'\n\t[medium_orchid]- Unique ASINs:[/]\t\t[blue]{two_asin_len}[/]'
+         f'\n\t[orange1]- Missing ASINs:[/]\t[blue]{two_missing_len}[/] [grey50](ASINs in Lib One not in Lib Two)[/]'
+         f'\n\b[green]ASINs in Both Libraries:[/]\t[blue]{len_both}[/]'),
          title='Library Details',
          title_align='left',
          border_style='light_green',
@@ -349,7 +346,7 @@ def main(
     # exit the app
     prog_time_total: float = perf_counter() - PROG_TIME_START
     con.print(Panel(
-        f':glowing_star: Complete :glowing_star: ([green]{prog_time_total:.4f}[/]s)',
+        f':glowing_star: Complete :glowing_star: ([blue]{prog_time_total:.4f}[/]s)',
          border_style='light_green',
          highlight=False,
          expand=False,
