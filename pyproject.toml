@@ -1,0 +1,101 @@
+[project]
+name = "abscomp"
+authors = [{name = "Brandon Wells", email = "b.w.prog@outlook.com"}]
+readme = "README.md"
+license = {file = "LICENSE"}
+classifiers = ["License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)"]
+dynamic = ["version", "description"]
+dependencies = [
+  'rich >=13.6.0',
+  'typer >=0.9.0',
+  'xxhash >=3.4.1',
+  'blake3 >=0.3.3',
+]
+
+[project.urls]
+Home = "https://github.com/bwprog"
+
+[project.optional-dependencies]
+dev = [
+  'ruff >=0.1.1',
+]
+tests = [
+  'pytest >=7.4.2',
+]
+
+[tool.ruff]
+# Increase the maximum line length to 100 characters.
+line-length = 120
+indent-width = 4
+# Exclude directories
+exclude = [
+  ".zzz",
+  ".pytest_cache",
+  ".ruff_cache",
+  ".vscode",
+  "docs",
+  "research",
+]
+# enable enforcement rules at Python 3.11 level
+target-version = "py311"
+# show ruff performed fixes
+show-fixes = true
+
+[tool.ruff.lint]
+# enforced rules
+select = ["ALL"]
+# ignored rules
+ignore = [
+  "ARG001",   # unused arguments - Typer args are of this type
+  "CPY",      # flake8-copyright notice - insists on copyright notice at top of file
+  "FBT001",   # boolean default positional argument -- seems wonky
+  "FBT002",   # boolean default positional argument -- seems wonky
+  # "PLR0911",  # pylint - too many rerurn statements
+  # "PLR0913",  # pylint - too many arguments to function call
+  # "PLR2004",  # pylint - don't use magic variable, define as CONSTANT and use that
+  "PLW0603",  # pylint - don"t use global to update global variables
+  "RET505",   # flake8-return - else after return -- too dumb to understand multiple elif
+  "TD003",    # todos - forced github link to reported bug
+  "UP007",    # pyupgrade - Typer doesn't support | unions yet
+]
+# enable preview rules
+preview = true
+
+# ignore missing docstring in empty __init__.py
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["D104"]
+
+[tool.ruff.mccabe]
+# Flag errors (`C901`) whenever the complexity level exceeds 5.
+max-complexity = 21
+
+[tool.ruff.format]
+# Prefer single quotes over double quotes.
+quote-style = "single"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+preview = true
+
+[tool.ruff.flake8-quotes]
+inline-quotes = "single"
+multiline-quotes = "single"
+
+[tool.ruff.pydocstyle]
+# Use Google-style docstrings.
+convention = "numpy"
+
+[tool.ruff.lint.pylint]
+# PLR0911 - affects match-case simple returns
+max-returns = 12
+# PLR0915 - affects adding log statements throughout
+max-statements = 75
+# PLR0913 - typer uses function args, need to bump this way up
+max-args = 30
+# PLR0912 - max number of branches for function or method
+max-branches = 21
+
+[tool.pytest.ini_options]
+addopts = [
+    "--import-mode=importlib",
+]

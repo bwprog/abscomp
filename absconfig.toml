@@ -1,0 +1,37 @@
+# Config files used by abscomp.py to load up the library details to compare.
+#
+### -- Example config (these values are not real) -- ###
+#
+#   [abs_lib_one]
+#   url = "https://mylib1.ddns.net:443"
+#   token = "aihsdfhpoahndhnflahwlofehwafhwelofhnowifh"
+#   library = "12345678-3456-3456-3456-abcdefghijkl"
+#
+### -- End Example --
+
+[schema]
+version = "1"
+
+# First library to compare
+[abs_lib_one]
+# URL: if direct http without encryption, it would be something like "http:mylib.example.com:13378"
+# URL: if behind an encrypted reverse proxy, it would look something like "https://mylib.ddns.net:443"
+url = "<Remove everything between quotes (leave quotes) and add the first library url here>"
+# TOKEN: must be provided by an admin of the abs server. Settings->Users-><specific user>->"API Token.
+# TOKEN: This is about 190 characters long."
+token = "<Remove everything between quotes (leave quotes) and add the first user token here>"
+# LIBRARY: unique ID of library within ABS to compare. Login to ABS web, select the library, and go to Home page. The
+# LIBRARY: address barwill be <url>/library/<ID>   <-- you want this ID which will be in 8-4-4-4-12 alphanumeric format.
+library = "<Remove everything between quotes (leave quotes) and add the first library ID here>"
+
+# Second library to compare
+[abs_lib_two]
+# URL: if direct http without encryption, it would be something like "http:mylib.example.com:13378"
+# URL: if behind an encrypted reverse proxy, it would look something like "https://mylib.ddns.net:443"
+url = "<Remove everything between quotes (leave quotes) and add the second library url here>"
+# TOKEN: must be provided by an admin of the abs server. Settings->Users-><specific user>->"API Token.
+# TOKEN: This is about 190 characters long."
+token = "<Remove everything between quotes (leave quotes) and add the second user token here>"
+# LIBRARY: unique ID of library within ABS to compare. Login to ABS web, select the library, and go to Home page. The
+# LIBRARY: address barwill be <url>/library/<ID>   <-- you want this ID which will be in 8-4-4-4-12 alphanumeric format.
+library = "<Remove everything between quotes (leave quotes) and add the second library ID here>"
