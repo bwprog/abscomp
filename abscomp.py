@@ -6,7 +6,7 @@ __author__ = 'Brandon Wells'
 __email__ = 'b.w.prog@outlook.com'
 __license__ = 'GPLv3+'
 __update__ = '2024.02.04'
-__version__ = '0.3.1'
+__version__ = '0.4.0'
 
 
 import csv
@@ -35,6 +35,7 @@ FILEBASE: str = f'abscomp_books_{NOW}_'
 install()
 con: Console = Console()
 app: Callable[..., None] = typer.Typer(rich_markup_mode='rich')
+
 
 # ~~~ #
 @dataclass(eq=True, frozen=True)
@@ -215,6 +216,58 @@ def write_output(
 
 
 # ~~~ #
+def write_summary(
+        lib_one_asin: dict[str, Book],
+        lib_two_asin: dict[str, Book],
+        first_compare: dict[str, dict[str, Book]],
+        second_compare: dict[str, dict[str, Book]],
+        lib_one: dict[str, Book],
+        lib_two: dict[str, Book],
+) -> None:
+    """Output a summary.
+
+    Parameters
+    ----------
+    lib_one_asin : dict[str, Book]
+        first library; key of asin
+    lib_two_asin : dict[str, Book]
+        second library; key of asin
+    first_compare : dict[str, dict[str, Book]]
+        first library comparison
+    second_compare : dict[str, dict[str, Book]]
+        second library comparison
+    lib_one : dict[str, Book]
+        first library; key of id
+    lib_two : dict[str, Book]
+        second library; key of id
+    """
+    one_asin_len: int = len(lib_one_asin)
+    two_asin_len: int = len(lib_two_asin)
+    one_missing_len: int = len(second_compare['missing'])
+    two_missing_len: int = len(first_compare['missing'])
+    len_both: int = len(first_compare['both'])
+    con.print(Panel(
+        ('Library One:'
+         f'\n\t[medium_orchid]- Unique Entries:[/]\t[blue]{len(lib_one)}[/]'
+         f'\n\t[medium_orchid]- Unique ASINs:[/]\t\t[blue]{one_asin_len}[/]'
+         f'\n\t[orange1]- Missing ASINs:[/]\t[blue]{one_missing_len}[/] [grey50](ASINs in Lib Two not in Lib One)[/]'
+        '\nLibrary Two:'
+         f'\n\t[medium_orchid]- Unique Entries:[/]\t[blue]{len(lib_two)}[/]'
+         f'\n\t[medium_orchid]- Unique ASINs:[/]\t\t[blue]{two_asin_len}[/]'
+         f'\n\t[orange1]- Missing ASINs:[/]\t[blue]{two_missing_len}[/] [grey50](ASINs in Lib One not in Lib Two)[/]'
+         f'\n\b[green]ASINs in Both Libraries:[/]\t[blue]{len_both}[/]'),
+         title='Library Details',
+         title_align='left',
+         border_style='light_green',
+         highlight=True,
+         width=60,
+         expand=False,
+         padding=1,
+        ),
+    )
+
+
+# ~~~ #
 def compare_libs(
         lib_one: dict[str, Book],
         lib_two: dict[str, Book],
@@ -285,7 +338,7 @@ def main(
         lib_num='One',
     )
     lib_one_end_time: float = perf_counter() - lib_one_start_time
-    con.print(f'\t└─❯ ([blue]{lib_one_end_time:.4f}[/]s)')
+    con.print(f'\t└─> ([blue]{lib_one_end_time:.4f}[/]s)')
 
     lib_two_start_time: float = perf_counter()
     lib_two: dict[str, Book] = get_library(
@@ -295,7 +348,7 @@ def main(
         lib_num='Two',
     )
     lib_two_end_time: float = perf_counter() - lib_two_start_time
-    con.print(f'\t└─❯ ([blue]{lib_two_end_time:.4f}[/]s)')
+    con.print(f'\t└─> ([blue]{lib_two_end_time:.4f}[/]s)')
 
     # create asin keyed libraries for easy comparison (this drops anything without an asin or duplicates with same asin)
     lib_one_asin: dict[str, Book] = {}
@@ -318,29 +371,13 @@ def main(
     write_output(contents=lib_one, out_type='one', flag_c=flag_c_csv, flag_j=flag_j_json)
     write_output(contents=lib_two, out_type='two_full', flag_c=flag_c_csv, flag_j=flag_j_json)
 
-    one_asin_len: int = len(lib_one_asin)
-    two_asin_len: int = len(lib_two_asin)
-    one_missing_len: int = len(second_compare['missing'])
-    two_missing_len: int = len(first_compare['missing'])
-    len_both: int = len(first_compare['both'])
-    con.print(Panel(
-        ('Library One:'
-         f'\n\t[medium_orchid]- Unique Entries:[/]\t[blue]{len(lib_one)}[/]'
-         f'\n\t[medium_orchid]- Unique ASINs:[/]\t\t[blue]{one_asin_len}[/]'
-         f'\n\t[orange1]- Missing ASINs:[/]\t[blue]{one_missing_len}[/] [grey50](ASINs in Lib Two not in Lib One)[/]'
-        '\nLibrary Two:'
-         f'\n\t[medium_orchid]- Unique Entries:[/]\t[blue]{len(lib_two)}[/]'
-         f'\n\t[medium_orchid]- Unique ASINs:[/]\t\t[blue]{two_asin_len}[/]'
-         f'\n\t[orange1]- Missing ASINs:[/]\t[blue]{two_missing_len}[/] [grey50](ASINs in Lib One not in Lib Two)[/]'
-         f'\n\b[green]ASINs in Both Libraries:[/]\t[blue]{len_both}[/]'),
-         title='Library Details',
-         title_align='left',
-         border_style='light_green',
-         highlight=True,
-         width=60,
-         expand=False,
-         padding=1,
-        ),
+    write_summary(
+        lib_one_asin=lib_one_asin,
+        lib_two_asin=lib_two_asin,
+        first_compare=first_compare,
+        second_compare=second_compare,
+        lib_one=lib_one,
+        lib_two=lib_two,
     )
 
     # exit the app
